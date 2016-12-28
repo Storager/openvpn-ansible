@@ -69,5 +69,7 @@ Vagrant.configure("2") do |config|
      apt-get install -y git python-pip build-essential
      pip install markupsafe
      pip install ansible
+     su - vagrant -c 'ssh-keygen -q -t rsa -f ~/.ssh/id_rsa -N ""'
+     su - vagrant -c 'cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys '
    SHELL
 end
