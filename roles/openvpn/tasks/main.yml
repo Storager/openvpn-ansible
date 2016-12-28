@@ -1,0 +1,7 @@
+- name: Install packages
+  apt:
+    pkg: "{{ item }}"
+    update_cache: true
+  with_items:
+    - openvpn
+    - easy-rsa
