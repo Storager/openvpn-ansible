@@ -12,3 +12,20 @@
     dest: "/etc/openvpn/server.conf"
     owner: root
     mode: 0644
+
+#- name: Adding forward one
+  #lineinfile:
+#    dest: "/proc/sys/net/ipv4/ip_forward"
+#    regexp: "^0"
+#    line: "1"
+#    owner: root
+
+- name: Implementing forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+  tags:
+    - line
