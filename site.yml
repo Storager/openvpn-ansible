@@ -5,3 +5,4 @@
 #    - "vars/header.yml"
   roles:
     - { role: openvpn }
+    - { role: ufw }
