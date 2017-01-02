@@ -2,6 +2,10 @@
   apt:
     pkg: ufw
     update_cache: true
+- name: Disable UFW
+  ufw:
+    state:  disabled
+    policy: deny
 
 - name: Add ssh rule
   ufw:
@@ -19,22 +23,22 @@
     dest: /etc/default/ufw
     line: DEFAULT_FORWARD_POLICY="ACCEPT"
     regexp: "^DEFAULT_FORWARD_POLICY\\="
-  notify: reload ufw
+#  notify: reload ufw
 - name: inject some lines in before.rules
-  lineinfile:
+  blockinfile:
     dest: /etc/ufw/before.rules
     insertbefore: "^# Don't delete these "
-    line: "{{ item }}"
-  with_items:
-    - "# START OPENVPN RULE"
-    - "# NAT table rules"
-    - "*nat"
-    - ":POSTROUTING ACCEPT [0:0]"
-    - "# Allow traffic from OpenVPN client to eth0"
-    - "-A POSTROUTING -s 10.8.0.0/8 -o eth0 -j MASQUERADE"
-    - "COMMIT"
-    - "# END OPENVPN RULES"
-
+    content: |
+      # START OPENVPN RULE
+      # NAT table rules
+      *nat
+      :POSTROUTING ACCEPT [0:0]
+      # Allow traffic from OpenVPN client to eth0
+      -A POSTROUTING -s 10.8.0.0/8 -o eth0 -j MASQUERADE
+      COMMIT
+      # END OPENVPN RULES
+  tags:
+   - rules
 - name: Enable UFW
   ufw:
     state:  enabled
