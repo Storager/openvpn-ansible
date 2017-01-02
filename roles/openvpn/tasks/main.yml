@@ -20,5 +20,12 @@
     sysctl_set: yes
     state: present
     reload: yes
+
+- name: Copying easy-rsa
+  copy:
+    src: "/usr/share/easy-rsa/"
+    dest: "/etc/openvpn/"
+#    recurse: yes
+    remote_src: false
   tags:
-    - line
+    - test
