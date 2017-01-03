@@ -26,13 +26,12 @@
     src: "/usr/share/easy-rsa"
     dest: "/etc/openvpn/"
 #    recurse: yes
+    mode: 0744
     remote_src: false
   tags:
-    - test
+   - test
 
 - name: Create vars directory
   file:
     path: /etc/openvpn/easy-rsa/keys
     state: directory
-  tags:
-    - test
