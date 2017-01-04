@@ -1,0 +1,3 @@
+---
+rsa_folder:     '/etc/openvpn/easy-rsa'
+openvpn_folder: '/etc/openvpn'
