@@ -6,12 +6,24 @@
     - openvpn
     - easy-rsa
 
+- name: Copying easy-rsa
+  copy:
+    src: "/usr/share/easy-rsa"
+    dest: "/etc/openvpn/"
+    mode: 0744
+    remote_src: false
+
 - name: Create configuration from configuration
   template:
-    src: "server.conf.j2"
-    dest: "/etc/openvpn/server.conf"
+    src:   "{{ item.fl_name }}"
+    dest:  "{{ item.fl_dest }}"
     owner: root
-    mode: 0644
+    mode:  0744
+#    force: yes
+  with_items:
+    - { fl_name: 'server.conf.j2',     fl_dest: '/etc/openvpn/server.conf' }
+    - { fl_name: 'vars.j2',            fl_dest: "{{ rsa_folder }}/vars" }
+#    - { fl_name: 'build-server.sh.j2', fl_dest: "{{ rsa_folder }}/build-server.sh" }
 
 - name: Implementing forwarding
   sysctl:
@@ -21,17 +33,18 @@
     state: present
     reload: yes
 
-- name: Copying easy-rsa
-  copy:
-    src: "/usr/share/easy-rsa"
-    dest: "/etc/openvpn/"
-#    recurse: yes
-    mode: 0744
-    remote_src: false
-  tags:
-   - test
-
 - name: Create vars directory
   file:
     path: /etc/openvpn/easy-rsa/keys
     state: directory
+
+- name: Remote call
+  script: ../files/build-server.sh
+
+- name: Starting openvpn
+  service:
+    name: openvpn
+    state: started
+
+- name: Copying clients stuff
+  script: ../files/client.sh
